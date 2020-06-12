@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 
@@ -90,7 +91,8 @@ public class PaintActivity extends AppCompatActivity {
                 Bitmap bmp = paintView.save();
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                bmp.compress(Bitmap.CompressFormat.JPEG, 90, stream);
+                Log.d("KKKKK", "SIze" + stream.size());
                 byte[] bmpBytes = stream.toByteArray();
                 try {
                     stream.close();

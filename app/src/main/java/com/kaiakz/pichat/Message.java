@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Message {
+class Message {
     private String sender;
     private String timestamp;
     private Bitmap bitmap;
@@ -17,15 +17,15 @@ public class Message {
         this.timestamp = new SimpleDateFormat("HH:mm:ss", Locale.CHINA).format(new Date(System.currentTimeMillis()));
     }
 
-    public String getSender() {
+    String getSender() {
         return sender;
     }
 
-    public String getTimestamp() {
+    String getTimestamp() {
         return timestamp;
     }
 
-    public Bitmap getBitmap() {
+    Bitmap getBitmap() {
         return bitmap;
     }
 }

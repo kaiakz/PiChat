@@ -26,13 +26,12 @@ public class MainActivity extends AppCompatActivity {
     Intent intent;
 
     List<Message> mlist = new ArrayList<>();
+    MessageAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
 
         intent = new Intent(this, PaintActivity.class);
 
@@ -44,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        MessageAdapter adapter = new MessageAdapter(mlist);
+        adapter = new MessageAdapter(mlist);
         recyclerView.setAdapter(adapter);
 
         fbs = findViewById(R.id.floatingActionButton);
@@ -64,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
                 byte[] bmpBytes = data.getByteArrayExtra("BMP");
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bmpBytes, 0, bmpBytes.length);
                 mlist.add(new Message(bitmap, "ME"));
+                adapter.notifyDataSetChanged();
             }
         }
     }
