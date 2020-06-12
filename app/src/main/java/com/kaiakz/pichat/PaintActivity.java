@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+
 public class PaintActivity extends AppCompatActivity {
 
     private PaintView paintView;
@@ -85,7 +88,16 @@ public class PaintActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 Bitmap bmp = paintView.save();
-                intent.putExtra("BMP", bmp);
+
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bmp.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] bmpBytes = stream.toByteArray();
+                try {
+                    stream.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                intent.putExtra("BMP", bmpBytes);
                 setResult(1, intent);
                 finish();
             }
