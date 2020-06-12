@@ -2,23 +2,32 @@ package com.kaiakz.pichat;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageButton;
 
 public class PaintActivity extends AppCompatActivity {
 
+    private PaintView paintView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_paint);
 
+        paintView = findViewById(R.id.paint_view);
+        initClickListener();
+    }
+
+    private void initClickListener() {
         ImageButton red = findViewById(R.id.paint_tool_red);
-        final PaintView p = findViewById(R.id.paint_pad);
+
         red.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                p.setColor(PaintView.ColorState.RED);
+                paintView.setColor(PaintView.ColorState.RED);
             }
         });
 
@@ -26,7 +35,7 @@ public class PaintActivity extends AppCompatActivity {
         blue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                p.setColor(PaintView.ColorState.BLUE);
+                paintView.setColor(PaintView.ColorState.BLUE);
             }
         });
 
@@ -34,7 +43,7 @@ public class PaintActivity extends AppCompatActivity {
         green.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                p.setColor(PaintView.ColorState.GREEN);
+                paintView.setColor(PaintView.ColorState.GREEN);
             }
         });
 
@@ -42,7 +51,7 @@ public class PaintActivity extends AppCompatActivity {
         black.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                p.setColor(PaintView.ColorState.BLACK);
+                paintView.setColor(PaintView.ColorState.BLACK);
             }
         });
 
@@ -50,7 +59,7 @@ public class PaintActivity extends AppCompatActivity {
         white.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                p.setColor(PaintView.ColorState.WHITE);
+                paintView.setColor(PaintView.ColorState.WHITE);
             }
         });
 
@@ -58,7 +67,7 @@ public class PaintActivity extends AppCompatActivity {
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                p.clear();
+                paintView.clear();
             }
         });
 
@@ -69,5 +78,18 @@ public class PaintActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        ImageButton send = findViewById(R.id.paint_tool_send);
+        send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                Bitmap bmp = paintView.save();
+                intent.putExtra("BMP", bmp);
+                setResult(1, intent);
+                finish();
+            }
+        });
     }
+
 }

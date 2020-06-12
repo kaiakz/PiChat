@@ -22,13 +22,8 @@ public class PaintView extends View {
     private HashMap<ColorState, Path> paths;
 
     public Paint paint;
-    public Paint dpaint;
     private float preX;
     private float preY;
-    private int view_width = 0;
-    private int view_height = 0;
-    Bitmap cacheBitmap = null;
-    Canvas cacheCanvas = null;
 
     private ColorState state;
 
@@ -60,15 +55,10 @@ public class PaintView extends View {
 
     public void init(Context context) {
 
-        view_width = context.getResources().getDisplayMetrics().widthPixels;
-        view_height = context.getResources().getDisplayMetrics().heightPixels;
+//        view_width = context.getResources().getDisplayMetrics().widthPixels;
+//        view_height = context.getResources().getDisplayMetrics().heightPixels;
 
-        cacheBitmap = Bitmap.createBitmap(view_width, view_height, Bitmap.Config.ARGB_8888);
-        cacheCanvas = new Canvas();
-
-//        path = new Path();
         paint = new Paint();
-//        dpaint = new Paint();
 
         state = ColorState.BLACK;
         paths = new HashMap<>();
@@ -147,5 +137,10 @@ public class PaintView extends View {
         invalidate();
     }
 
+    public Bitmap save() {
+        Bitmap bitmap = Bitmap.createBitmap(this.getWidth(), this.getHeight(), Bitmap.Config.ARGB_8888);
+        this.draw(new Canvas(bitmap));
+        return bitmap;
+    }
 
 }

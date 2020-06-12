@@ -13,7 +13,7 @@
         android:layout_marginHorizontal="25dp"
         app:cardCornerRadius="20dp">
             <com.kaiakz.pichat.PaintView
-                android:id="@+id/paint_pad"
+                android:id="@+id/paint_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_above="@id/paint_tool"/>

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.View;
@@ -22,14 +23,16 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fbs;
     Intent intent;
 
+    List<Message> mlist = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
 
-        intent = new Intent(this, PaintActivity.class);
 
+        intent = new Intent(this, PaintActivity.class);
 
 
         RecyclerView recyclerView = findViewById(R.id.message_view);
@@ -37,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
 
-        List<Message> mlist = new ArrayList<>();
+
 
         MessageAdapter adapter = new MessageAdapter(mlist);
         recyclerView.setAdapter(adapter);
@@ -54,5 +57,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 1 && resultCode == 1) {
+            if (data != null) {
+                Bitmap bitmap = (Bitmap) data.getParcelableExtra("BMP");
+                mlist.add(new Message(bitmap, "ME"));
+            }
+        }
     }
 }
