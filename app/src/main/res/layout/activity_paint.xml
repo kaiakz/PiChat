@@ -78,17 +78,16 @@
             android:scaleType="fitCenter"
             android:padding="20dp"
             android:layout_margin="5dp"
-            android:background="@drawable/ic_delete_sweep_black_24dp"
-            android:id="@+id/paint_tool_clear"/>
+            android:background="@drawable/ic_fiber_manual_record_black_24dp"
+            android:id="@+id/paint_tool_yellow"/>
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:scaleType="fitCenter"
             android:padding="20dp"
-
             android:background="@drawable/ic_clear_black_24dp"
-            android:id="@+id/paint_tool_close"/>
+            android:id="@+id/paint_tool_clear"/>
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
