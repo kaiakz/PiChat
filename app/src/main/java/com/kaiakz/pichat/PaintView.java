@@ -28,7 +28,7 @@ public class PaintView extends View {
     private ColorState state;
 
     public enum ColorState {
-        WHITE(Color.WHITE), BLACK(Color.BLACK), RED(Color.RED), BLUE(Color.BLUE), GREEN(Color.GREEN);
+        WHITE(Color.WHITE), BLACK(Color.BLACK), RED(Color.RED), BLUE(Color.BLUE), GREEN(Color.GREEN), YELLOW(Color.YELLOW);
         private int color;
         private ColorState(int color) {
             this.color = color;
@@ -55,9 +55,6 @@ public class PaintView extends View {
 
     public void init(Context context) {
 
-//        view_width = context.getResources().getDisplayMetrics().widthPixels;
-//        view_height = context.getResources().getDisplayMetrics().heightPixels;
-
         paint = new Paint();
 
         state = ColorState.BLACK;
@@ -66,6 +63,7 @@ public class PaintView extends View {
         paths.put(ColorState.BLUE, new Path());
         paths.put(ColorState.GREEN, new Path());
         paths.put(ColorState.RED, new Path());
+        paths.put(ColorState.YELLOW, new Path());
         paths.put(ColorState.WHITE, new Path());
 
         paint.setAntiAlias(true);
@@ -73,7 +71,6 @@ public class PaintView extends View {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeWidth(8f);
-
 
 //        params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
     }
