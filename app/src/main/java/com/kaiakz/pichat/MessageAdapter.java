@@ -1,11 +1,11 @@
 package com.kaiakz.pichat;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,7 +14,7 @@ import java.util.List;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
 
-    private List<Message> msgList;
+    private List<PMessage> msgList;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
@@ -29,7 +29,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
         }
     }
 
-    MessageAdapter(List<Message> msgList) {
+    MessageAdapter(List<PMessage> msgList) {
         this.msgList = msgList;
     }
 
@@ -42,10 +42,18 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        Message msg = msgList.get(position);
+        final PMessage msg = msgList.get(position);
         holder.senderName.setText(msg.getSender());
         holder.senderTimestamp.setText(msg.getTimestamp());
         holder.imageView.setImageBitmap(msg.getBitmap());
+
+        holder.imageView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                Toast.makeText(v.getContext(), "Saved Successfully", Toast.LENGTH_SHORT).show();
+                return true;
+            }
+        });
     }
 
     @Override

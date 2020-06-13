@@ -67,19 +67,19 @@ public class PaintActivity extends AppCompatActivity {
             }
         });
 
+        ImageButton yellow = findViewById(R.id.paint_tool_yellow);
+        yellow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                paintView.setColor(PaintView.ColorState.YELLOW);
+            }
+        });
+
         ImageButton clear = findViewById(R.id.paint_tool_clear);
         clear.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 paintView.clear();
-            }
-        });
-
-        ImageButton close = findViewById(R.id.paint_tool_close);
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
             }
         });
 
@@ -91,8 +91,8 @@ public class PaintActivity extends AppCompatActivity {
                 Bitmap bmp = paintView.save();
 
                 ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bmp.compress(Bitmap.CompressFormat.JPEG, 90, stream);
-                Log.d("KKKKK", "SIze" + stream.size());
+                bmp.compress(Bitmap.CompressFormat.JPEG, 80, stream);
+                Log.d("BMP SIZE", stream.size() + " bytes");
                 byte[] bmpBytes = stream.toByteArray();
                 try {
                     stream.close();
@@ -106,4 +106,9 @@ public class PaintActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+    }
 }

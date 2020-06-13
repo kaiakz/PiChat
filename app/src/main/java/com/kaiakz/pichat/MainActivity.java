@@ -1,22 +1,28 @@
 package com.kaiakz.pichat;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.LinearSnapHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Message;
 import android.view.View;
-import android.widget.ImageButton;
+import android.widget.Toast;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +31,16 @@ public class MainActivity extends AppCompatActivity {
     FloatingActionButton fbs;
     Intent intent;
 
-    List<Message> mlist = new ArrayList<>();
+    List<PMessage> mlist = new ArrayList<>();
     MessageAdapter adapter;
+
+    Handler handler;
+
+    String name = "ME";
+
+    Socket socket;
+    DataOutputStream dataOutputStream;
+    DataInputStream dataInputStream;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         intent = new Intent(this, PaintActivity.class);
 
-
         RecyclerView recyclerView = findViewById(R.id.message_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
-
-
 
         adapter = new MessageAdapter(mlist);
         recyclerView.setAdapter(adapter);
@@ -53,18 +64,78 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent, 1);
             }
         });
+
+        handler = new Handler(new Handler.Callback() {
+            @Override
+            public boolean handleMessage(@NonNull Message msg) {
+                    if (msg.what == 100) {
+                        Toast.makeText(getApplicationContext(), "Received", Toast.LENGTH_SHORT).show();
+                        byte[] b = (byte[])msg.obj;
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+                        mlist.add(new PMessage(bitmap, "YOU"));
+                        adapter.notifyDataSetChanged();
+                    }
+                    return true;
+                }
+            });
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    socket = new Socket("10.0.2.2", 8011);
+                    dataInputStream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+                    dataOutputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+                    while (true) {
+                        String sender = dataInputStream.readUTF();
+                        int len = dataInputStream.readInt();
+                        byte[] b = new byte[len];
+                        dataInputStream.readFully(b);
+                        Message msg = new Message();
+                        msg.what = 100;
+                        msg.obj = b;
+                        handler.sendMessage(msg);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 1 && resultCode == 1) {
             if (data != null) {
-                byte[] bmpBytes = data.getByteArrayExtra("BMP");
+                final byte[] bmpBytes = data.getByteArrayExtra("BMP");
+                assert bmpBytes != null;
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bmpBytes, 0, bmpBytes.length);
-                mlist.add(new Message(bitmap, "ME"));
+                mlist.add(new PMessage(bitmap, "ME"));
                 adapter.notifyDataSetChanged();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            dataOutputStream.writeInt(1);
+                            dataOutputStream.flush();
+                            dataOutputStream.writeUTF("Mike");
+                            dataOutputStream.flush();
+                            dataOutputStream.writeInt(bmpBytes.length);
+                            dataOutputStream.flush();
+                            dataOutputStream.write(bmpBytes);
+                            dataOutputStream.flush();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }).start();
             }
         }
     }
+
+
 }
