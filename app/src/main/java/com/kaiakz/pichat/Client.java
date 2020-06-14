@@ -29,7 +29,7 @@ public class Client {
         dataOutputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
     }
 
-    public boolean register(String id, String pwd) throws IOException {
+    public boolean regist(String id, String pwd) throws IOException {
         dataOutputStream.writeInt(-1);
         dataOutputStream.flush();
         dataOutputStream.writeUTF(id);
