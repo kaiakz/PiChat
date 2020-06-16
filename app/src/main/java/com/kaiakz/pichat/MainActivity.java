@@ -36,9 +36,8 @@ public class MainActivity extends AppCompatActivity {
 
     Handler handler;
 
-    String name = "ME";
+    String username = "ME";
 
-    Socket socket;
     DataOutputStream dataOutputStream;
     DataInputStream dataInputStream;
 
@@ -46,6 +45,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        username = getIntent().getStringExtra("USERNAME");
 
         intent = new Intent(this, PaintActivity.class);
 
@@ -69,23 +70,26 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public boolean handleMessage(@NonNull Message msg) {
                     if (msg.what == 100) {
-                        Toast.makeText(getApplicationContext(), "Received", Toast.LENGTH_SHORT).show();
-                        byte[] b = (byte[])msg.obj;
-                        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
-                        mlist.add(new PMessage(bitmap, "YOU"));
+                        Toast.makeText(getApplicationContext(), "Received A New Picture", Toast.LENGTH_SHORT).show();
+//                        byte[] b = (byte[])msg.obj;
+//                        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+//                        mlist.add(new PMessage(bitmap, ));
                         adapter.notifyDataSetChanged();
                     }
                     return true;
                 }
             });
 
+        dataInputStream = ((PiChat)getApplication()).getDataInputStream();
+        dataOutputStream = ((PiChat)getApplication()).getDataOutputStream();
+
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
-                    socket = new Socket("10.0.2.2", 8011);
-                    dataInputStream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
-                    dataOutputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
+//                    socket = new Socket("10.0.2.2", 8011);
+//                    dataInputStream = new DataInputStream(new BufferedInputStream(socket.getInputStream()));
+//                    dataOutputStream = new DataOutputStream(new BufferedOutputStream(socket.getOutputStream()));
                     while (true) {
                         String sender = dataInputStream.readUTF();
                         int len = dataInputStream.readInt();
@@ -93,7 +97,8 @@ public class MainActivity extends AppCompatActivity {
                         dataInputStream.readFully(b);
                         Message msg = new Message();
                         msg.what = 100;
-                        msg.obj = b;
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
+                        mlist.add(new PMessage(bitmap, sender));
                         handler.sendMessage(msg);
                     }
                 } catch (IOException e) {
@@ -113,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
                 final byte[] bmpBytes = data.getByteArrayExtra("BMP");
                 assert bmpBytes != null;
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bmpBytes, 0, bmpBytes.length);
-                mlist.add(new PMessage(bitmap, "ME"));
+                mlist.add(new PMessage(bitmap, username));
                 adapter.notifyDataSetChanged();
 
                 new Thread(new Runnable() {
@@ -122,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
                         try {
                             dataOutputStream.writeInt(1);
                             dataOutputStream.flush();
-                            dataOutputStream.writeUTF("Mike");
-                            dataOutputStream.flush();
+//                            dataOutputStream.writeUTF(username);
+//                            dataOutputStream.flush();
                             dataOutputStream.writeInt(bmpBytes.length);
                             dataOutputStream.flush();
                             dataOutputStream.write(bmpBytes);
