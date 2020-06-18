@@ -41,6 +41,8 @@ public class MainActivity extends AppCompatActivity {
     DataOutputStream dataOutputStream;
     DataInputStream dataInputStream;
 
+    RecyclerView recyclerView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         intent = new Intent(this, PaintActivity.class);
 
-        RecyclerView recyclerView = findViewById(R.id.message_view);
+        recyclerView = findViewById(R.id.message_view);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         recyclerView.setLayoutManager(layoutManager);
@@ -75,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 //                        Bitmap bitmap = BitmapFactory.decodeByteArray(b, 0, b.length);
 //                        mlist.add(new PMessage(bitmap, ));
                         adapter.notifyDataSetChanged();
+                        recyclerView.smoothScrollToPosition(mlist.size() == 0 ? 0 : mlist.size() - 1);
                     }
                     return true;
                 }
@@ -120,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
                 Bitmap bitmap = BitmapFactory.decodeByteArray(bmpBytes, 0, bmpBytes.length);
                 mlist.add(new PMessage(bitmap, username));
                 adapter.notifyDataSetChanged();
+                recyclerView.smoothScrollToPosition(mlist.size() == 0 ? 0 : mlist.size() - 1);
 
                 new Thread(new Runnable() {
                     @Override
